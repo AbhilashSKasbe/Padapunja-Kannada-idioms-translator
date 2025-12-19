@@ -24,7 +24,7 @@ main_bp = Blueprint('main', __name__)
 
 # --- Configuration Constants (Loaded from Env) ---
 SMTP_SERVER = os.getenv("PAD_SMTP_SERVER", "smtp.gmail.com")
-SMTP_PORT = int(os.getenv("PAD_SMTP_PORT", 587))
+# SMTP_PORT = int(os.getenv("PAD_SMTP_PORT", 587))
 SENDER_EMAIL = os.getenv("PAD_SENDER_EMAIL")
 SENDER_PASSWORD = os.getenv("PAD_SENDER_PASS")
 OTP_EXPIRY_SECONDS = 5 * 60
@@ -57,7 +57,7 @@ def login():
         message = f"Subject: {subject}\n\nYour OTP for Padapunja is: {otp}\nThis OTP expires in 5 minutes."
 
         try:
-            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=10)
+            server = smtplib.SMTP(SMTP_SERVER, 587, timeout=10)
             server.starttls()
             server.login(SENDER_EMAIL, SENDER_PASSWORD)
             server.quit()
