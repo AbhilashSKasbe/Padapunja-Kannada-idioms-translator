@@ -57,7 +57,7 @@ def login():
         message = f"Subject: {subject}\n\nYour OTP for Padapunja is: {otp}\nThis OTP expires in 5 minutes."
 
         try:
-            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=10)
+            server = smtplib.SMTP(SMTP_SERVER, 587, timeout=10)
             server.starttls()
             server.login(SENDER_EMAIL, SENDER_PASSWORD)
             server.sendmail(SENDER_EMAIL, email, message)
