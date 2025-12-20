@@ -57,10 +57,15 @@ def login():
         message = f"Subject: {subject}\n\nYour OTP for Padapunja is: {otp}\nThis OTP expires in 5 minutes."
 
         try:
-            server = smtplib.SMTP(SMTP_SERVER, 587, timeout=10)
-            server.starttls()
+            server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15)            
             server.login(SENDER_EMAIL, SENDER_PASSWORD)
             server.quit()
+
+        except OSError as e:
+            # This specifically catches the [Errno 101] error
+            print(f"CRITICAL NETWORK ERROR: {e}")
+            print("This often means the server is trying to use IPv6. Trying to force IPv4...")
+
         except Exception as e:
             logging.exception("Failed to send OTP via SMTP")
             return render_template("login.html", error=f"Failed to send OTP. Check server logs.")
