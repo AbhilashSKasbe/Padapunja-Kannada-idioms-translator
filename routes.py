@@ -57,24 +57,22 @@ def login():
         message = f"Subject: {subject}\n\nYour OTP for Padapunja is: {otp}\nThis OTP expires in 5 minutes."
 
         try:
-            import ssl
-            context = ssl.create_default_context()
-            with smtplib.SMTP(SMTP_SERVER, 587, timeout=10) as server:
-                server.starttls(context=context) # Upgrade the connection to secure
+            # Use standard SMTP with STARTTLS (Port 587)
+            # This works best with Brevo/SendGrid/Mailjet
+            server_host = os.getenv("PAD_SMTP_SERVER", "smtp-relay.brevo.com")
+            server_port = int(os.getenv("PAD_SMTP_PORT", 587))
+            
+            # Note: We do NOT use SMTP_SSL here, we use standard SMTP + starttls
+            with smtplib.SMTP(server_host, server_port, timeout=30) as server:
+                server.starttls() # Secure the connection
                 server.login(SENDER_EMAIL, SENDER_PASSWORD)
                 server.sendmail(SENDER_EMAIL, email, message)
-                print("Email sent successfully!")
+                print(f"Email sent successfully via {server_host}!")
 
-        except OSError as e:
-            # This specifically catches the [Errno 101] error
-            print(f"CRITICAL NETWORK ERROR: {e}")
-            print("This often means the server is trying to use IPv6. Trying to force IPv4...")
-
+            return redirect(url_for("main.verify_otp"))
+        
         except Exception as e:
-            logging.exception("Failed to send OTP via SMTP")
-            return render_template("login.html", error=f"Failed to send OTP. Check server logs.")
-
-        return redirect(url_for("main.verify_otp"))
+            logging.error(f"Failed to send OTP: {e}")
 
     return render_template("login.html")
 
