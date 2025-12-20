@@ -57,9 +57,11 @@ def login():
         message = f"Subject: {subject}\n\nYour OTP for Padapunja is: {otp}\nThis OTP expires in 5 minutes."
 
         try:
-            server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15)            
-            server.login(SENDER_EMAIL, SENDER_PASSWORD)
-            server.quit()
+            import ssl
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL(SMTP_SERVER, 465, context=context, timeout=30) as server:
+                server.login(SENDER_EMAIL, SENDER_PASSWORD)
+                server.sendmail(SENDER_EMAIL, email, message)
 
         except OSError as e:
             # This specifically catches the [Errno 101] error
