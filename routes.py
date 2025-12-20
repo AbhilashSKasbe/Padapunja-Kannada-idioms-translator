@@ -73,8 +73,7 @@ def login():
         
         except Exception as e:
             logging.error(f"Failed to send OTP: {e}")
-
-    return render_template("login.html")
+            return render_template("login.html")
 
 @main_bp.route("/verify", methods=["GET", "POST"])
 def verify_otp():
