@@ -59,9 +59,11 @@ def login():
         try:
             import ssl
             context = ssl.create_default_context()
-            with smtplib.SMTP_SSL(SMTP_SERVER, 465, context=context, timeout=30) as server:
+            with smtplib.SMTP(SMTP_SERVER, 587, timeout=10) as server:
+                server.starttls(context=context) # Upgrade the connection to secure
                 server.login(SENDER_EMAIL, SENDER_PASSWORD)
                 server.sendmail(SENDER_EMAIL, email, message)
+                print("Email sent successfully!")
 
         except OSError as e:
             # This specifically catches the [Errno 101] error
