@@ -23,11 +23,11 @@ def create_app():
 
     # Configuration
     app.secret_key = os.getenv("FLASK_SECRET", "dev_secret")
-    database_url = os.getenv('DATABASE_URL', 'mysql+pymysql://root:Abhi%402004@localhost/kannada_db?charset=utf8mb4')
+    database_url = os.getenv('DATABASE_URL', 'postgresql://localhost/kannada_db')
     
-    # If the URL from Render starts with "mysql://", replace it with "mysql+pymysql://"
-    if database_url and database_url.startswith("mysql://"):
-        database_url = database_url.replace("mysql://", "mysql+pymysql://", 1)
+    # If the URL from Render starts with "postgres://", replace it with "postgresql://"
+    if database_url and database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
         
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url    
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
